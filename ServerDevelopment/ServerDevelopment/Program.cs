@@ -15,9 +15,16 @@ internal class Program
         builder.Services.AddScoped<ICustomerDataProvider, CustomerDataProvider>();
         builder.Services.AddScoped<ICustomerService, CustomerService>();
         builder.Services.AddDbContext<AppDbContext>();
-        
+        builder.Services.AddCors(o => o.AddPolicy("All", builder =>
+        {
+            builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                //Always allow the debug version in browser
+                .SetIsOriginAllowed(origin => origin == "http://localhost:4200");
+        }));
         var app = builder.Build();
-
+        
         // HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
@@ -30,9 +37,10 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
+        app.UseCors("All");
         app.UseStaticFiles();
         app.UseRouting();
-
+        
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();

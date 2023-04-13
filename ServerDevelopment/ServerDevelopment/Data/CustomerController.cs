@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -16,13 +17,19 @@ namespace ServerDevelopment.Data
         {
             _customerService = customerService;
         }
-
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult GetData()
         {
-            var customers = await _customerService.GetAllCustomersAsync();
-            return Ok(customers);
+            var data = new List<string>() { "Data 1", "Data 2", "Data 3" };
+            return Ok(data);
         }
+
+        //[HttpGet]
+        //public async Task<IActionResult> Get()
+        //{
+        //    var customers = await _customerService.GetAllCustomersAsync();
+        //    return Ok(customers);
+        //}
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
