@@ -20,7 +20,7 @@ namespace DataAccessLayer.DataProviders
         {
             var count = await _context.Customers.LongCountAsync();
             var allcustomers = await _context.Customers.ToListAsync();
-            if(!allcustomers.Any())
+            if (!allcustomers.Any())
             {
                 var randomCustomers = GenerateRandomCustomers(100);
                 foreach (var customer in randomCustomers)
@@ -29,7 +29,7 @@ namespace DataAccessLayer.DataProviders
                 }
                 await _context.SaveChangesAsync();
             }
-            
+
             return allcustomers;
         }
 
@@ -60,7 +60,12 @@ namespace DataAccessLayer.DataProviders
             }
         }
 
-        public async Task<IEnumerable<Customer>> SearchCustomersAsync(string searchTerm, 
+        public async Task<int> GetRecordsCount()
+        {
+            return await _context.Customers.CountAsync();
+        }
+
+        public async Task<IEnumerable<Customer>> SearchCustomersAsync(string searchTerm,
             string sortColumn, string sortDirection, int pageIndex, int pageSize)
         {
             return await _context.Customers.FromSqlRaw("EXECUTE GetCustomersWithSortingAndPaging @p0, @p1, @p2, @p3, @p4",
@@ -68,8 +73,9 @@ namespace DataAccessLayer.DataProviders
         }
 
 
-        ///////////////////////////////////
-        ///
+        /// <summary>
+        /// private methods
+        /// </summary>
 
         public List<Customer> GenerateRandomCustomers(int count)
         {
@@ -106,7 +112,7 @@ namespace DataAccessLayer.DataProviders
 
         private string GetRandomCompanyName(Random random)
         {
-            var suffixes = new List<string> { "Inc", "LLC", "Corp", "Ltd" };
+            var suffixes = new List<string> { "Inc", "LLC", "Corp", "Ltd", "Company" };
             return $"{GetRandomName(random)} {suffixes[random.Next(suffixes.Count)]}";
         }
 
@@ -124,7 +130,7 @@ namespace DataAccessLayer.DataProviders
 
         private string GetRandomEmail(Random random)
         {
-            var domains = new List<string> { "gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "aol.com" };
+            var domains = new List<string> { "gmail.com", "i.ua", "somemail.com", "outlook.com", "aol.com", "personal.com" };
             return $"{GetRandomName(random).ToLower()}.{GetRandomName(random).ToLower()}@{domains[random.Next(domains.Count)]}";
         }
     }

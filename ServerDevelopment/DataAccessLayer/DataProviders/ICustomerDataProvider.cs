@@ -16,5 +16,6 @@ namespace DataAccessLayer.DataProviders
         Task DeleteCustomerAsync(string name);
         Task<IEnumerable<Customer>> SearchCustomersAsync(string searchTerm,
             string sortColumn, string sortDirection, int pageIndex, int pageSize);
+        Task<int> GetRecordsCount();
     }
 }

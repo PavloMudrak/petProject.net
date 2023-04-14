@@ -42,5 +42,18 @@ namespace ServerDevelopment.Data
         {
             return await _customerProvider.SearchCustomersAsync(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
         }
+
+        public async Task<int> CalculatePagesCount(int pageSize)
+        {
+            var recordsCount = await _customerProvider.GetRecordsCount();
+            if ((recordsCount % pageSize) == 0)
+            {
+                return recordsCount / pageSize;
+            }
+            else 
+            {
+                return recordsCount / pageSize + 1; 
+            }
+        }
     }
 }

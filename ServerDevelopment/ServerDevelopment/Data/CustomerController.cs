@@ -84,13 +84,33 @@ namespace ServerDevelopment.Data
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> SearchCustomers([FromQuery] int pageSize = 10, [FromQuery] string? searchTerm = "")
+        public async Task<IActionResult> SearchCustomers([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1, [FromQuery] string? searchTerm = "")
         {
-            string sortColumn = "Name";
-            string sortDirection = "asc";
-            int pageIndex = 1;
-            var customers = await _customerService.SearchCustomersAsync(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
-            return Ok(customers);
+            try
+            {
+                string sortColumn = "Name";
+                string sortDirection = "asc";
+                var customers = await _customerService.SearchCustomersAsync(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
+                return Ok(customers);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("pages")]
+        public async Task<IActionResult> GetPagesCountAsync([FromQuery] int pageSize = 10, [FromQuery] string? searchTerm = "")
+        {
+            try
+            {
+                var result = await _customerService.CalculatePagesCount(pageSize);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
