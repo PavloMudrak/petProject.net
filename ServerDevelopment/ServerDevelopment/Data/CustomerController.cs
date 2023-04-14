@@ -84,13 +84,16 @@ namespace ServerDevelopment.Data
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> SearchCustomers([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1, [FromQuery] string? searchTerm = "")
+        public async Task<IActionResult> SearchCustomers(
+            [FromQuery] int pageSize = 10, 
+            [FromQuery] int pageIndex = 1, 
+            [FromQuery] string? searchTerm = "", 
+            [FromQuery] string? sortColumn = "Name",
+            [FromQuery] string? sortOrder = "ASC")
         {
             try
             {
-                string sortColumn = "Name";
-                string sortDirection = "asc";
-                var customers = await _customerService.SearchCustomersAsync(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
+                var customers = await _customerService.SearchCustomersAsync(searchTerm, sortColumn, sortOrder, pageIndex, pageSize);
                 return Ok(customers);
             }
             catch (Exception ex)
@@ -100,7 +103,7 @@ namespace ServerDevelopment.Data
         }
 
         [HttpGet("pages")]
-        public async Task<IActionResult> GetPagesCountAsync([FromQuery] int pageSize = 10, [FromQuery] string? searchTerm = "")
+        public async Task<IActionResult> GetPagesCountAsync([FromQuery] int pageSize = 10)
         {
             try
             {
