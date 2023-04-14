@@ -26,16 +26,16 @@ namespace ServerDevelopment.Data
             return Ok(customers);
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetById(int id)
-        //{
-        //    var customer = await _customerService.GetByIdAsync(id);
-        //    if (customer == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok(customer);
-        //}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var customer = await _customerService.GetByIdAsync(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            return Ok(customer);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Post(Customer customer)
@@ -83,12 +83,12 @@ namespace ServerDevelopment.Data
             }
         }
 
-        [HttpGet("{search}")]
-        public async Task<IActionResult> SearchCustomers(
-        [FromQuery] string searchTerm, [FromQuery] string sortColumn,
-        [FromQuery] string sortDirection = "asc", [FromQuery] int pageIndex = 1,
-        [FromQuery] int pageSize = 10)
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchCustomers([FromQuery] int pageSize = 10, [FromQuery] string? searchTerm = "")
         {
+            string sortColumn = "Name";
+            string sortDirection = "asc";
+            int pageIndex = 1;
             var customers = await _customerService.SearchCustomersAsync(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
             return Ok(customers);
         }

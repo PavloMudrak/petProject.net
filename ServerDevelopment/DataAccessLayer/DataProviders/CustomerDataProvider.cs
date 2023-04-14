@@ -18,6 +18,7 @@ namespace DataAccessLayer.DataProviders
 
         public async Task<List<Customer>> GetAllCustomersAsync()
         {
+            var count = await _context.Customers.LongCountAsync();
             var allcustomers = await _context.Customers.ToListAsync();
             if(!allcustomers.Any())
             {
