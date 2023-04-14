@@ -18,12 +18,6 @@ builder.Services.AddCors(options => options.AddPolicy(name: "MyApp",
         policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
     }));
 
-//builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
-//{
-//    policy.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
-//}));
-
-
 var app = builder.Build();
 
 // HTTP request pipeline.
