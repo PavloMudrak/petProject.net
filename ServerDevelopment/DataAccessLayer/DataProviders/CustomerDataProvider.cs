@@ -18,13 +18,18 @@ namespace DataAccessLayer.DataProviders
 
         public async Task<List<Customer>> GetAllCustomersAsync()
         {
-            var randomCustomers = GenerateRandomCustomers(1000);
-            foreach(var customer in randomCustomers)
+            var allcustomers = await _context.Customers.ToListAsync();
+            if(!allcustomers.Any())
             {
-                await _context.Customers.AddAsync(customer);
+                var randomCustomers = GenerateRandomCustomers(100);
+                foreach (var customer in randomCustomers)
+                {
+                    await _context.Customers.AddAsync(customer);
+                }
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
-            return await _context.Customers.ToListAsync();
+            
+            return allcustomers;
         }
 
         public async Task<Customer> GetCustomerByIdAsync(int id)

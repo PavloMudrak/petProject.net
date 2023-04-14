@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230414101248_AddStoredProcedure")]
-    partial class AddStoredProcedure
+    [Migration("20230414111030_AddIndexesToCustomersTable")]
+    partial class AddIndexesToCustomersTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
