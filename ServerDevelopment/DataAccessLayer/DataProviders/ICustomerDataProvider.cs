@@ -13,6 +13,8 @@ namespace DataAccessLayer.DataProviders
         Task<Customer> GetCustomerByIdAsync(int id);
         Task AddCustomerAsync(Customer customer);
         Task UpdateCustomerAsync(Customer customer);
-        Task DeleteCustomerAsync(int id);
+        Task DeleteCustomerAsync(string name);
+        Task<IEnumerable<Customer>> SearchCustomersAsync(string searchTerm,
+            string sortColumn, string sortDirection, int pageIndex, int pageSize);
     }
 }

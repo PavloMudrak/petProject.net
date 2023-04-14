@@ -9,7 +9,9 @@ namespace ServerDevelopment.Data
         Task CreateAsync(Customer customer);
         Task<Customer> GetByIdAsync(int id);
         Task UpdateAsync(Customer customer);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(string name);
         Task<List<Customer>> GetAllCustomersAsync();
+        Task<IEnumerable<Customer>> SearchCustomersAsync(string searchTerm, string sortColumn,
+        string sortDirection, int pageIndex, int pageSize);
     }
 }

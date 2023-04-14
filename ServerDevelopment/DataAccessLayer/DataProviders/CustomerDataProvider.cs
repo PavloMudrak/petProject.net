@@ -37,14 +37,21 @@ namespace DataAccessLayer.DataProviders
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteCustomerAsync(int id)
+        public async Task DeleteCustomerAsync(string name)
         {
-            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == id);
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Name == name);
             if (customer != null)
             {
                 _context.Customers.Remove(customer);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<IEnumerable<Customer>> SearchCustomersAsync(string searchTerm, 
+            string sortColumn, string sortDirection, int pageIndex, int pageSize)
+        {
+            return await _context.Customers.FromSqlRaw("EXECUTE GetCustomersWithSortingAndPaging @p0, @p1, @p2, @p3, @p4",
+                searchTerm, sortColumn, sortDirection, pageIndex, pageSize).ToListAsync();
         }
     }
 }

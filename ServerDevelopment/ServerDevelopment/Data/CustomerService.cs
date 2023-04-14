@@ -27,14 +27,20 @@ namespace ServerDevelopment.Data
             await _customerProvider.UpdateCustomerAsync(customer);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string name)
         {
-            await _customerProvider.DeleteCustomerAsync(id);
+            await _customerProvider.DeleteCustomerAsync(name);
         }
 
         public async Task<List<Customer>> GetAllCustomersAsync()
         {
             return await _customerProvider.GetAllCustomersAsync();
+        }
+
+        public async Task<IEnumerable<Customer>> SearchCustomersAsync(string searchTerm, string sortColumn,
+        string sortDirection, int pageIndex, int pageSize)
+        {
+            return await _customerProvider.SearchCustomersAsync(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
         }
     }
 }
