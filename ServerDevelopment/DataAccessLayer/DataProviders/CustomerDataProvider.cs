@@ -62,7 +62,17 @@ namespace DataAccessLayer.DataProviders
 
         public async Task<int> GetRecordsCount()
         {
-            return await _context.Customers.CountAsync();
+            var result =  await _context.Customers.CountAsync();
+            if (result == 0)
+            {
+                var randomCustomers = GenerateRandomCustomers(100);
+                foreach (var customer in randomCustomers)
+                {
+                    await _context.Customers.AddAsync(customer);
+                }
+                await _context.SaveChangesAsync();
+            }
+            return result;
         }
 
         public async Task<IEnumerable<Customer>> SearchCustomersAsync(string searchTerm,
