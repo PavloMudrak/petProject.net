@@ -85,29 +85,20 @@ namespace ServerDevelopment.Data
 
         [HttpGet("search")]
         public async Task<IActionResult> SearchCustomers(
-            [FromQuery] int pageSize = 10, 
-            [FromQuery] int pageIndex = 1, 
-            [FromQuery] string? searchTerm = "", 
+            [FromQuery] int pageSize = 10,
+            [FromQuery] int pageIndex = 1,
+            [FromQuery] string? searchTerm = "",
             [FromQuery] string? sortColumn = "Name",
             [FromQuery] string? sortOrder = "ASC")
         {
             try
             {
-                var customers = await _customerService.SearchCustomersAsync(searchTerm, sortColumn, sortOrder, pageIndex, pageSize);
-                return Ok(customers);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("pages")]
-        public async Task<IActionResult> GetPagesCountAsync([FromQuery] int pageSize = 10)
-        {
-            try
-            {
-                var result = await _customerService.CalculatePagesCount(pageSize);
+                var customers = await _customerService.SearchCustomersAsync2(searchTerm, sortColumn, sortOrder, pageIndex, pageSize);
+                var result = new
+                {
+                    Customers = customers.Customers,
+                    PagesCount = await _customerService.CalculatePagesCount(pageSize, customers.TotalRows)
+                };
                 return Ok(result);
             }
             catch (Exception ex)

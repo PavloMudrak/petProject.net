@@ -13,6 +13,8 @@ namespace ServerDevelopment.Data
         Task<List<Customer>> GetAllCustomersAsync();
         Task<IEnumerable<Customer>> SearchCustomersAsync(string searchTerm, string sortColumn,
         string sortDirection, int pageIndex, int pageSize);
-        Task<int> CalculatePagesCount(int pageSize);
+        Task<int> CalculatePagesCount(int pageSize, int totalRows);
+        Task<(IEnumerable<Customer> Customers, int TotalRows)> SearchCustomersAsync2(
+            string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize);
     }
 }

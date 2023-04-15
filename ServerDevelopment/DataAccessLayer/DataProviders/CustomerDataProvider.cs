@@ -1,6 +1,8 @@
 ﻿using DataAccessLayer.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -81,6 +83,28 @@ namespace DataAccessLayer.DataProviders
             return await _context.Customers.FromSqlRaw("EXECUTE GetCustomersWithSortingAndPaging @p0, @p1, @p2, @p3, @p4",
                 searchTerm, sortColumn, sortDirection, pageIndex, pageSize).ToListAsync();
         }
+
+        public async Task<(IEnumerable<Customer> Customers, int TotalRows)> SearchCustomersAsync2(string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize)
+        {
+            var totalRowsParameter = new SqlParameter("@TotalRows", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var customers = await _context.Customers.FromSqlRaw("EXECUTE dbo.GetCustomersWithSortingAndPaging @SearchTerm, @SortColumn, @SortOrder, @PageNumber, @PageSize, @TotalRows OUTPUT",
+                new SqlParameter("@SearchTerm", searchTerm ?? (object)DBNull.Value),
+                new SqlParameter("@SortColumn", sortColumn),
+                new SqlParameter("@SortOrder", sortDirection),
+                new SqlParameter("@PageNumber", pageIndex),
+                new SqlParameter("@PageSize", pageSize),
+                totalRowsParameter).ToListAsync();
+
+            var totalRows = (int)totalRowsParameter.Value;
+
+            return (customers, totalRows);
+
+        }
+
 
 
         /// <summary>

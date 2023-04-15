@@ -17,5 +17,7 @@ namespace DataAccessLayer.DataProviders
         Task<IEnumerable<Customer>> SearchCustomersAsync(string searchTerm,
             string sortColumn, string sortDirection, int pageIndex, int pageSize);
         Task<int> GetRecordsCount();
+        Task<(IEnumerable<Customer> Customers, int TotalRows)> SearchCustomersAsync2(
+            string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize);
     }
 }

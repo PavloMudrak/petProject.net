@@ -43,16 +43,22 @@ namespace ServerDevelopment.Data
             return await _customerProvider.SearchCustomersAsync(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
         }
 
-        public async Task<int> CalculatePagesCount(int pageSize)
+        public async Task<(IEnumerable<Customer> Customers, int TotalRows)> SearchCustomersAsync2(string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize)
         {
-            var recordsCount = await _customerProvider.GetRecordsCount();
-            if ((recordsCount % pageSize) == 0)
+            var result = await _customerProvider.SearchCustomersAsync2(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
+            return result;
+        }
+
+
+            public async Task<int> CalculatePagesCount(int pageSize, int totalRows)
+        {
+            if ((totalRows % pageSize) == 0)
             {
-                return recordsCount / pageSize;
+                return totalRows / pageSize;
             }
             else 
             {
-                return recordsCount / pageSize + 1; 
+                return totalRows / pageSize + 1; 
             }
         }
     }
