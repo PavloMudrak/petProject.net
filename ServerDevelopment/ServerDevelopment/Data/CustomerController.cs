@@ -90,7 +90,7 @@ namespace ServerDevelopment.Data
         {
             try
             {
-                var customers = await _customerService.SearchCustomersAsync2(searchTerm, sortColumn, sortOrder, pageIndex, pageSize);
+                var customers = await _customerService.SearchCustomersAsync(searchTerm, sortColumn, sortOrder, pageIndex, pageSize);
                 var result = new
                 {
                     Customers = customers.Customers,

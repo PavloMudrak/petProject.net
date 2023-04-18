@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.DataProviders;
+﻿using AutoMapper;
+using DataAccessLayer.DataProviders;
 using DataAccessLayer.Models;
 
 namespace ServerDevelopment.Data
@@ -6,10 +7,12 @@ namespace ServerDevelopment.Data
     public class CustomerService : ICustomerService
     {
         private readonly ICustomerDataProvider _customerProvider;
+        private readonly IMapper _mapper;
 
-        public CustomerService(ICustomerDataProvider customerService)
+        public CustomerService(ICustomerDataProvider customerService, IMapper customersMapper)
         {
             _customerProvider = customerService;
+            _mapper = customersMapper;
         }
 
         public async Task CreateAsync(Customer customer)
@@ -37,16 +40,11 @@ namespace ServerDevelopment.Data
             return await _customerProvider.GetAllCustomersAsync();
         }
 
-        public async Task<IEnumerable<Customer>> SearchCustomersAsync(string searchTerm, string sortColumn,
-        string sortDirection, int pageIndex, int pageSize)
-        {
-            return await _customerProvider.SearchCustomersAsync(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
-        }
-
-        public async Task<(IEnumerable<Customer> Customers, int TotalRows)> SearchCustomersAsync2(string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize)
+        public async Task<(IEnumerable<CustomerDTO> Customers, int TotalRows)> SearchCustomersAsync(string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize)
         {
             var result = await _customerProvider.SearchCustomersAsync2(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
-            return result;
+            var customersDTO = _mapper.Map<List<CustomerDTO>>(result.Customers);
+            return (customersDTO, result.TotalRows);
         }
 
 

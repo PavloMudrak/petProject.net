@@ -11,10 +11,8 @@ namespace ServerDevelopment.Data
         Task UpdateAsync(Customer customer);
         Task DeleteAsync(string name);
         Task<List<Customer>> GetAllCustomersAsync();
-        Task<IEnumerable<Customer>> SearchCustomersAsync(string searchTerm, string sortColumn,
-        string sortDirection, int pageIndex, int pageSize);
         Task<int> CalculatePagesCount(int pageSize, int totalRows);
-        Task<(IEnumerable<Customer> Customers, int TotalRows)> SearchCustomersAsync2(
+        Task<(IEnumerable<CustomerDTO> Customers, int TotalRows)> SearchCustomersAsync(
             string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize);
     }
 }
