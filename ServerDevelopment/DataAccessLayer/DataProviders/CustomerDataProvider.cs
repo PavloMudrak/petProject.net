@@ -62,19 +62,15 @@ namespace DataAccessLayer.DataProviders
             }
         }
 
-        public async Task<int> GetRecordsCount()
+        public async Task<int> FillDbByRandomData()
         {
-            var result =  await _context.Customers.CountAsync();
-            if (result == 0)
+            var randomCustomers = GenerateRandomCustomers(10000);
+            foreach (var customer in randomCustomers)
             {
-                var randomCustomers = GenerateRandomCustomers(100);
-                foreach (var customer in randomCustomers)
-                {
-                    await _context.Customers.AddAsync(customer);
-                }
-                await _context.SaveChangesAsync();
+                await _context.Customers.AddAsync(customer);
             }
-            return result;
+            await _context.SaveChangesAsync();
+            return 1;
         }
 
         public async Task<IEnumerable<Customer>> SearchCustomersAsync(string searchTerm,

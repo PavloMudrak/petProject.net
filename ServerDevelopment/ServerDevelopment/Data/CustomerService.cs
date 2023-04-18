@@ -50,15 +50,19 @@ namespace ServerDevelopment.Data
         }
 
 
-            public async Task<int> CalculatePagesCount(int pageSize, int totalRows)
+        public async Task<int> CalculatePagesCount(int pageSize, int totalRows)
         {
+            if(totalRows == 0)
+            {
+                var a = _customerProvider.FillDbByRandomData();
+            }
             if ((totalRows % pageSize) == 0)
             {
                 return totalRows / pageSize;
             }
-            else 
+            else
             {
-                return totalRows / pageSize + 1; 
+                return totalRows / pageSize + 1;
             }
         }
     }
