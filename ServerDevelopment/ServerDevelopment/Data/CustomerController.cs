@@ -35,12 +35,16 @@ namespace ServerDevelopment.Data
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Customer customer)
+        public async Task<IActionResult> Post(CustomerDTO customer)
         {
             try
             {
-                await _customerService.CreateAsync(customer);
-                return Ok();
+                var result = await _customerService.CreateAsync(customer);
+                if (!result.IsValid)
+                {
+                    return Conflict(result.Errors);
+                }
+                return NoContent();
             }
             catch (Exception ex)
             {

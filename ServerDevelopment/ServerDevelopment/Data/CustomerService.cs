@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataAccessLayer.DataProviders;
 using DataAccessLayer.Models;
+using FluentValidation;
 
 namespace ServerDevelopment.Data
 {
@@ -15,9 +16,18 @@ namespace ServerDevelopment.Data
             _mapper = customersMapper;
         }
 
-        public async Task CreateAsync(Customer customer)
+        public async Task<FluentValidation.Results.ValidationResult> CreateAsync(CustomerDTO customer)
         {
-            await _customerProvider.AddCustomerAsync(customer);
+            var validator = new CustomerValidator(this);
+            var validatorResult = await validator.ValidateAsync(customer);
+            if (validatorResult.IsValid)
+            {
+                var customerForDb = _mapper.Map<Customer>(customer);
+                await _customerProvider.AddCustomerAsync(customerForDb);
+            }
+                
+
+            return validatorResult;
         }
 
         public async Task<CustomerDTO> GetByName(string name)

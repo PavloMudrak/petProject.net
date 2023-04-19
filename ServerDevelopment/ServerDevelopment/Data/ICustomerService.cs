@@ -6,7 +6,7 @@ namespace ServerDevelopment.Data
 {
     public interface ICustomerService
     {
-        Task CreateAsync(Customer customer);
+        Task<FluentValidation.Results.ValidationResult> CreateAsync(CustomerDTO customer);
         Task<CustomerDTO> GetByName(string name);
         Task<FluentValidation.Results.ValidationResult> UpdateAsync(string name, CustomerDTO customer);
         Task DeleteAsync(string name);
