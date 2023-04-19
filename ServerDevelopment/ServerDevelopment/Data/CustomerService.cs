@@ -16,45 +16,30 @@ namespace ServerDevelopment.Data
             _mapper = customersMapper;
         }
 
-        public async Task<FluentValidation.Results.ValidationResult> CreateAsync(CustomerDTO customer)
+        public async Task CreateAsync(CustomerDTO customer)
         {
-            var validator = new CustomerValidator(this);
-            var validatorResult = await validator.ValidateAsync(customer);
-            if (validatorResult.IsValid)
-            {
-                var customerForDb = _mapper.Map<Customer>(customer);
-                await _customerProvider.AddCustomerAsync(customerForDb);
-            }
-                
-
-            return validatorResult;
+            var customerForDb = _mapper.Map<Customer>(customer);
+            await _customerProvider.AddCustomerAsync(customerForDb);
         }
 
-        public async Task<CustomerDTO> GetByName(string name)
+        public async Task<CustomerDTO> GetByNameAsync(string name)
         {
             var result = await _customerProvider.GetCustomerByNameAsync(name);
             var customerDTO = _mapper.Map<CustomerDTO>(result);
             return customerDTO;
         }
 
-        public async Task<FluentValidation.Results.ValidationResult> UpdateAsync(string oldName, CustomerDTO customer)
+        public async Task UpdateAsync(string oldName,CustomerDTO customer)
         {
-            var validator = new CustomerValidator(this, oldName);
-            var validatorResult = await validator.ValidateAsync(customer);
+            var customerFromDb = await _customerProvider.GetCustomerByNameAsync(oldName);
+            var updatedCustomer = _mapper.Map<Customer>(customer);
 
-            if (validatorResult.IsValid)
-            {
-                var customerFromDb = await _customerProvider.GetCustomerByNameAsync(oldName);
-                var updatedCustomer = _mapper.Map<Customer>(customer);
+            customerFromDb.Name = updatedCustomer.Name;
+            customerFromDb.Phone = updatedCustomer.Phone;
+            customerFromDb.CompanyName = updatedCustomer.CompanyName;
+            customerFromDb.EmailAddress = updatedCustomer.EmailAddress;
 
-                customerFromDb.Name = updatedCustomer.Name;
-                customerFromDb.Phone = updatedCustomer.Phone;
-                customerFromDb.CompanyName = updatedCustomer.CompanyName;
-                customerFromDb.EmailAddress = updatedCustomer.EmailAddress;
-
-                await _customerProvider.UpdateCustomerAsync(customerFromDb);
-            }
-            return validatorResult;
+            await _customerProvider.UpdateCustomerAsync(customerFromDb);
 
         }
 
@@ -83,21 +68,5 @@ namespace ServerDevelopment.Data
             }
         }
 
-        public async Task<bool> IsNameUniqueAsync(string newName, string oldName)
-        {
-            if (oldName == newName && oldName != "")
-            {
-                return true;
-            }
-            else
-            {
-                var customer = await _customerProvider.GetCustomerByNameAsync(newName);
-                if (customer == null)
-                {
-                    return true;
-                }
-                return false;
-            }
-        }
     }
 }

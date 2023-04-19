@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.Models;
+using FluentValidation;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using ServerDevelopment.Data.other;
@@ -9,10 +10,12 @@ namespace ServerDevelopment.Data
     [Route("api/[controller]")]
     public class CustomersController : ControllerBase
     {
+        private readonly IValidator<CustomerDTO> _customerValidator;
         private readonly ICustomerService _customerService;
 
-        public CustomersController(ICustomerService customerService)
+        public CustomersController(IValidator<CustomerDTO> customerValidator, ICustomerService customerService)
         {
+            _customerValidator = customerValidator;
             _customerService = customerService;
         }
         [HttpGet("{name}")]
@@ -22,7 +25,7 @@ namespace ServerDevelopment.Data
             {
                 return BadRequest();
             }
-            var customer = await _customerService.GetByName(name);
+            var customer = await _customerService.GetByNameAsync(name);
             if (customer == null)
             {
                 return NotFound();
@@ -35,12 +38,13 @@ namespace ServerDevelopment.Data
         {
             try
             {
-                var result = await _customerService.CreateAsync(customer);
-                if (!result.IsValid)
-                {
-                    return Conflict(result.Errors);
-                }
+                var validationResult = await _customerValidator.ValidateAsync(customer);
+                if (!validationResult.IsValid)
+                    return Conflict(validationResult.Errors);
+
+                await _customerService.CreateAsync(customer);
                 return NoContent();
+
             }
             catch (Exception ex)
             {
@@ -53,12 +57,14 @@ namespace ServerDevelopment.Data
         {
             try
             {
-                var result = await _customerService.UpdateAsync(name, customer);
-                if (!result.IsValid)
-                {
-                    return Conflict(result.Errors);
-                }
+                var validationResult = await _customerValidator.ValidateAsync(customer);
+                if (!validationResult.IsValid)
+                    return Conflict(validationResult.Errors);
+
+                await _customerService.UpdateAsync(name, customer);
                 return NoContent();
+
+
             }
             catch (Exception ex)
             {

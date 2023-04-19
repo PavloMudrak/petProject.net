@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using AutoMapper;
 using DataAccessLayer.Models;
 using ServerDevelopment.Mapper;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,16 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<ICustomerDataProvider, CustomerDataProvider>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddTransient<IValidator<CustomerDTO>>(serviceProvider =>
+{
+    var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+    var oldName = httpContextAccessor?.HttpContext?.Request?.RouteValues?["name"]?.ToString();
+    var customerService = serviceProvider.GetRequiredService<ICustomerService>();
+    return new CustomerValidator(customerService, oldName);
+});
+
 
 builder.Services.AddCors(options => options.AddPolicy(name: "MyApp",
     policy =>

@@ -13,8 +13,19 @@ public class CustomerValidator : AbstractValidator<CustomerDTO>
         .Length(4, 30).WithMessage("Name must be between 4 and 30 characters.")
         .MustAsync(async (name, cancellation) =>
         {
-            var isNameUnique = await _customerService.IsNameUniqueAsync(name, oldName);
-            return isNameUnique;
+            if (oldName == name && oldName != "")
+            {
+                return true;
+            }
+            else
+            {
+                var customer = await _customerService.GetByNameAsync(name);
+                if (customer == null)
+                {
+                    return true;
+                }
+                return false;
+            }
         })
         .WithMessage("Name must be unique.");
 
