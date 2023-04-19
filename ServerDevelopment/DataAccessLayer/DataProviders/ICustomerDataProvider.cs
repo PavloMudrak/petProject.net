@@ -14,7 +14,7 @@ namespace DataAccessLayer.DataProviders
         Task UpdateCustomerAsync(Customer customer);
         Task DeleteCustomerAsync(string name);
         Task<int> FillDbByRandomData();
-        Task<(IEnumerable<Customer> Customers, int TotalRows)> SearchCustomersAsync2(
+        Task<(IEnumerable<Customer> Customers, int TotalRows)> SearchCustomersAsync(
             string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize);
     }
 }

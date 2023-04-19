@@ -65,7 +65,7 @@ namespace ServerDevelopment.Data
 
         public async Task<(IEnumerable<CustomerDTO> Customers, int TotalRows)> SearchCustomersAsync(string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize)
         {
-            var result = await _customerProvider.SearchCustomersAsync2(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
+            var result = await _customerProvider.SearchCustomersAsync(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
             var customersDTO = _mapper.Map<List<CustomerDTO>>(result.Customers);
             return (customersDTO, result.TotalRows);
         }

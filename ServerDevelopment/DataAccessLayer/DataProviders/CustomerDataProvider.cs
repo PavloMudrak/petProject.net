@@ -56,7 +56,7 @@ namespace DataAccessLayer.DataProviders
             return 1;
         }
 
-        public async Task<(IEnumerable<Customer> Customers, int TotalRows)> SearchCustomersAsync2(string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize)
+        public async Task<(IEnumerable<Customer> Customers, int TotalRows)> SearchCustomersAsync(string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize)
         {
             var result = await GetCustomers(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
             if(result.TotalRows == 0)
