@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using ServerDevelopment.Data.other;
 
 namespace ServerDevelopment.Data
 {
@@ -17,6 +18,10 @@ namespace ServerDevelopment.Data
         [HttpGet("{name}")]
         public async Task<IActionResult> GetByName(string name)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                return BadRequest();
+            }
             var customer = await _customerService.GetByName(name);
             if (customer == null)
             {
@@ -48,7 +53,7 @@ namespace ServerDevelopment.Data
         {
             try
             {
-                var result = await _customerService.UpdateAsync(name ,customer);
+                var result = await _customerService.UpdateAsync(name, customer);
                 if (!result.IsValid)
                 {
                     return Conflict(result.Errors);
@@ -76,26 +81,21 @@ namespace ServerDevelopment.Data
         }
 
         [HttpGet]
-        public async Task<IActionResult> SearchCustomers(
-            [FromQuery] int pageSize = 10,
-            [FromQuery] int pageIndex = 1,
-            [FromQuery] string? searchTerm = "",
-            [FromQuery] string? sortColumn = "Name",
-            [FromQuery] string? sortOrder = "ASC")
+        public async Task<ActionResult<SearchCustomersResponse>> SearchCustomers([FromQuery] SearchCustomersRequest request)
         {
             try
             {
-                var customers = await _customerService.SearchCustomersAsync(searchTerm, sortColumn, sortOrder, pageIndex, pageSize);
-                var result = new
+                var customers = await _customerService.SearchCustomersAsync(request.Query, request.SortColumn.ToString(), request.SortOrder.ToString(), request.PageIndex, request.PageSize);
+                var response = new SearchCustomersResponse
                 {
-                    Customers = customers.Customers,
-                    PagesCount = _customerService.CalculatePagesCount(pageSize, customers.TotalRows)
+                    Customers = (List<CustomerDTO>)customers.Customers,
+                    PagesCount = _customerService.CalculatePagesCount(request.PageSize, customers.TotalRows)
                 };
-                return Ok(result);
+                return Ok(response);
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
+                return BadRequest();
             }
         }
     }
