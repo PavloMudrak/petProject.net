@@ -5,12 +5,12 @@
 namespace DataAccessLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class NewStoredProcedureForSearching : Migration
+    public partial class ProcedureUpdated : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
-		{
-            migrationBuilder.Sql(@"CREATE PROCEDURE dbo.GetCustomersWithSortingAndPaging
+        {
+            migrationBuilder.Sql(@"CREATE PROCEDURE dbo.GetCustomersByAllFields
             	@SearchTerm NVARCHAR(50) = NULL,
             	@SortColumn NVARCHAR(50) = 'Name',
             	@SortOrder NVARCHAR(50) = 'ASC',
@@ -25,7 +25,7 @@ namespace DataAccessLayer.Migrations
             	WHERE (@SearchTerm IS NULL OR Name LIKE '%' + @SearchTerm + '%'
             		OR CompanyName LIKE '%' + @SearchTerm + '%'
             		OR Phone LIKE '%' + @SearchTerm + '%'
-            		OR Email LIKE '%' + @SearchTerm + '%');
+            		OR EmailAddress LIKE '%' + @SearchTerm + '%');
             
             	SELECT * FROM (
             		SELECT ROW_NUMBER() OVER (ORDER BY
@@ -35,13 +35,13 @@ namespace DataAccessLayer.Migrations
             			CASE WHEN @SortColumn = 'CompanyName' AND @SortOrder = 'DESC' THEN CompanyName END DESC,
             			CASE WHEN @SortColumn = 'Phone' AND @SortOrder = 'ASC' THEN Phone END ASC,
             			CASE WHEN @SortColumn = 'Phone' AND @SortOrder = 'DESC' THEN Phone END DESC,
-            			CASE WHEN @SortColumn = 'Email' AND @SortOrder = 'ASC' THEN Email END ASC,
-            			CASE WHEN @SortColumn = 'Email' AND @SortOrder = 'DESC' THEN Email END DESC
+            			CASE WHEN @SortColumn = 'EmailAddress' AND @SortOrder = 'ASC' THEN EmailAddress END ASC,
+            			CASE WHEN @SortColumn = 'EmailAddress' AND @SortOrder = 'DESC' THEN EmailAddress END DESC
             		) AS RowNum, * FROM Customers
             		WHERE (@SearchTerm IS NULL OR Name LIKE '%' + @SearchTerm + '%'
             			OR CompanyName LIKE '%' + @SearchTerm + '%'
             			OR Phone LIKE '%' + @SearchTerm + '%'
-            			OR Email LIKE '%' + @SearchTerm + '%')
+            			OR EmailAddress LIKE '%' + @SearchTerm + '%')
             	) AS CustomersWithRowNumbers
             	ORDER BY RowNum
             	OFFSET (@PageNumber - 1) * @PageSize ROWS
@@ -51,13 +51,14 @@ namespace DataAccessLayer.Migrations
             END
             
             ");
-
-		}
-
-		/// <inheritdoc />
-		protected override void Down(MigrationBuilder migrationBuilder)
-        {
             migrationBuilder.Sql("DROP PROCEDURE dbo.GetCustomersWithSortingAndPaging");
+
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql("DROP PROCEDURE dbo.GetCustomersByAllFields");
         }
     }
 }

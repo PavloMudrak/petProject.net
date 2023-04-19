@@ -7,7 +7,7 @@ namespace ServerDevelopment.Data
     public interface ICustomerService
     {
         Task CreateAsync(Customer customer);
-        Task<Customer> GetByIdAsync(int id);
+        Task<CustomerDTO> GetByIdName(string name);
         Task UpdateAsync(Customer customer);
         Task DeleteAsync(string name);
         Task<List<Customer>> GetAllCustomersAsync();

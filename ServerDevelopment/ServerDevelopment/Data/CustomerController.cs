@@ -23,10 +23,10 @@ namespace ServerDevelopment.Data
             return Ok(customers);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet("{name}")]
+        public async Task<IActionResult> GetByName(string name)
         {
-            var customer = await _customerService.GetByIdAsync(id);
+            var customer = await _customerService.GetByIdName(name);
             if (customer == null)
             {
                 return NotFound();

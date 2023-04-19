@@ -20,9 +20,11 @@ namespace ServerDevelopment.Data
             await _customerProvider.AddCustomerAsync(customer);
         }
 
-        public async Task<Customer> GetByIdAsync(int id)
+        public async Task<CustomerDTO> GetByIdName(string name)
         {
-            return await _customerProvider.GetCustomerByIdAsync(id);
+            var result =  await _customerProvider.GetCustomerByNameAsync(name);
+            var customerDTO = _mapper.Map<CustomerDTO>(result);
+            return customerDTO;
         }
 
         public async Task UpdateAsync(Customer customer)

@@ -20,24 +20,13 @@ namespace DataAccessLayer.DataProviders
 
         public async Task<List<Customer>> GetAllCustomersAsync()
         {
-            var count = await _context.Customers.LongCountAsync();
             var allcustomers = await _context.Customers.ToListAsync();
-            if (!allcustomers.Any())
-            {
-                var randomCustomers = GenerateRandomCustomers(100);
-                foreach (var customer in randomCustomers)
-                {
-                    await _context.Customers.AddAsync(customer);
-                }
-                await _context.SaveChangesAsync();
-            }
-
             return allcustomers;
         }
 
-        public async Task<Customer> GetCustomerByIdAsync(int id)
+        public async Task<Customer> GetCustomerByNameAsync(string name)
         {
-            return await _context.Customers.FirstOrDefaultAsync(c => c.Id == id);
+            return await _context.Customers.FirstOrDefaultAsync(c => c.Name == name);
         }
 
         public async Task AddCustomerAsync(Customer customer)
@@ -82,12 +71,32 @@ namespace DataAccessLayer.DataProviders
 
         public async Task<(IEnumerable<Customer> Customers, int TotalRows)> SearchCustomersAsync2(string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize)
         {
+            var result = await GetCustomers(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
+            if(result.TotalRows == 0)
+            {
+                var randomCustomers = GenerateRandomCustomers(100);
+                await _context.Customers.AddRangeAsync(randomCustomers);
+                await _context.SaveChangesAsync();
+                return await GetCustomers(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
+            }
+            return result;
+        }
+
+
+
+        /// <summary>
+        /// private methods
+        /// </summary>
+
+
+        private async Task<(IEnumerable<Customer> Customers, int TotalRows)> GetCustomers(string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize)
+        {
             var totalRowsParameter = new SqlParameter("@TotalRows", SqlDbType.Int)
             {
                 Direction = ParameterDirection.Output
             };
 
-            var customers = await _context.Customers.FromSqlRaw("EXECUTE dbo.GetCustomersWithSortingAndPaging @SearchTerm, @SortColumn, @SortOrder, @PageNumber, @PageSize, @TotalRows OUTPUT",
+            var customers = await _context.Customers.FromSqlRaw("EXECUTE dbo.GetCustomersByAllFields @SearchTerm, @SortColumn, @SortOrder, @PageNumber, @PageSize, @TotalRows OUTPUT",
                 new SqlParameter("@SearchTerm", searchTerm ?? (object)DBNull.Value),
                 new SqlParameter("@SortColumn", sortColumn),
                 new SqlParameter("@SortOrder", sortDirection),
@@ -102,10 +111,6 @@ namespace DataAccessLayer.DataProviders
         }
 
 
-
-        /// <summary>
-        /// private methods
-        /// </summary>
 
         public List<Customer> GenerateRandomCustomers(int count)
         {
@@ -125,7 +130,7 @@ namespace DataAccessLayer.DataProviders
                     Name = name + i,
                     CompanyName = companyName,
                     Phone = phone,
-                    Email = email
+                    EmailAddress = email
                 };
 
                 customers.Add(customer);
@@ -148,14 +153,9 @@ namespace DataAccessLayer.DataProviders
 
         private string GetRandomPhone(Random random)
         {
-            var builder = new StringBuilder();
-            builder.Append("(");
-            builder.Append(random.Next(100, 1000).ToString());
-            builder.Append(") ");
-            builder.Append(random.Next(100, 1000).ToString());
-            builder.Append("-");
-            builder.Append(random.Next(1000, 10000).ToString());
-            return builder.ToString();
+            int number = random.Next(100000000, 999999999); // генерує випадкове число з діапазону 100000000-999999999
+            string result = number.ToString();
+            return result;
         }
 
         private string GetRandomEmail(Random random)
