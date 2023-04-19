@@ -9,13 +9,10 @@ namespace DataAccessLayer.DataProviders
 {
     public interface ICustomerDataProvider
     {
-        Task<List<Customer>> GetAllCustomersAsync();
         Task<Customer> GetCustomerByNameAsync(string name);
         Task AddCustomerAsync(Customer customer);
         Task UpdateCustomerAsync(Customer customer);
         Task DeleteCustomerAsync(string name);
-        Task<IEnumerable<Customer>> SearchCustomersAsync(string searchTerm,
-            string sortColumn, string sortDirection, int pageIndex, int pageSize);
         Task<int> FillDbByRandomData();
         Task<(IEnumerable<Customer> Customers, int TotalRows)> SearchCustomersAsync2(
             string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize);

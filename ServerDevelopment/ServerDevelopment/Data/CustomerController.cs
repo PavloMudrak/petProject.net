@@ -15,14 +15,6 @@ namespace ServerDevelopment.Data
         {
             _customerService = customerService;
         }
-
-        [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            var customers = await _customerService.GetAllCustomersAsync();
-            return Ok(customers);
-        }
-
         [HttpGet("{name}")]
         public async Task<IActionResult> GetByName(string name)
         {
@@ -84,7 +76,7 @@ namespace ServerDevelopment.Data
             }
         }
 
-        [HttpGet("search")]
+        [HttpGet]
         public async Task<IActionResult> SearchCustomers(
             [FromQuery] int pageSize = 10,
             [FromQuery] int pageIndex = 1,
@@ -98,7 +90,7 @@ namespace ServerDevelopment.Data
                 var result = new
                 {
                     Customers = customers.Customers,
-                    PagesCount = await _customerService.CalculatePagesCount(pageSize, customers.TotalRows)
+                    PagesCount = _customerService.CalculatePagesCount(pageSize, customers.TotalRows)
                 };
                 return Ok(result);
             }

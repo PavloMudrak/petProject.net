@@ -18,12 +18,6 @@ namespace DataAccessLayer.DataProviders
             _context = context;
         }
 
-        public async Task<List<Customer>> GetAllCustomersAsync()
-        {
-            var allcustomers = await _context.Customers.ToListAsync();
-            return allcustomers;
-        }
-
         public async Task<Customer> GetCustomerByNameAsync(string name)
         {
             return await _context.Customers.FirstOrDefaultAsync(c => c.Name == name);
@@ -60,13 +54,6 @@ namespace DataAccessLayer.DataProviders
             }
             await _context.SaveChangesAsync();
             return 1;
-        }
-
-        public async Task<IEnumerable<Customer>> SearchCustomersAsync(string searchTerm,
-            string sortColumn, string sortDirection, int pageIndex, int pageSize)
-        {
-            return await _context.Customers.FromSqlRaw("EXECUTE GetCustomersWithSortingAndPaging @p0, @p1, @p2, @p3, @p4",
-                searchTerm, sortColumn, sortDirection, pageIndex, pageSize).ToListAsync();
         }
 
         public async Task<(IEnumerable<Customer> Customers, int TotalRows)> SearchCustomersAsync2(string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize)

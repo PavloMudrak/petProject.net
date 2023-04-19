@@ -63,11 +63,6 @@ namespace ServerDevelopment.Data
             await _customerProvider.DeleteCustomerAsync(name);
         }
 
-        public async Task<List<Customer>> GetAllCustomersAsync()
-        {
-            return await _customerProvider.GetAllCustomersAsync();
-        }
-
         public async Task<(IEnumerable<CustomerDTO> Customers, int TotalRows)> SearchCustomersAsync(string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize)
         {
             var result = await _customerProvider.SearchCustomersAsync2(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
@@ -76,12 +71,8 @@ namespace ServerDevelopment.Data
         }
 
 
-        public async Task<int> CalculatePagesCount(int pageSize, int totalRows)
+        public int CalculatePagesCount(int pageSize, int totalRows)
         {
-            if (totalRows == 0)
-            {
-                var a = _customerProvider.FillDbByRandomData();
-            }
             if ((totalRows % pageSize) == 0)
             {
                 return totalRows / pageSize;
@@ -107,7 +98,6 @@ namespace ServerDevelopment.Data
                 }
                 return false;
             }
-            return false;
         }
     }
 }
