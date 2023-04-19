@@ -21,84 +21,48 @@ namespace ServerDevelopment.Data
         [HttpGet("{name}")]
         public async Task<IActionResult> GetByName(string name)
         {
-            if (string.IsNullOrEmpty(name))
-            {
-                return BadRequest();
-            }
             var customer = await _customerService.GetByNameAsync(name);
             if (customer == null)
-            {
                 return NotFound();
-            }
+
             return Ok(customer);
         }
 
         [HttpPost]
         public async Task<IActionResult> Post(CustomerDTO customer)
         {
-            try
-            {
-                var validationResult = await _customerValidator.ValidateAsync(customer);
-                if (!validationResult.IsValid)
-                    return Conflict(validationResult.Errors);
+            var validationResult = await _customerValidator.ValidateAsync(customer);
+            if (!validationResult.IsValid)
+                return Conflict(validationResult.Errors);
 
-                await _customerService.CreateAsync(customer);
-                return NoContent();
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _customerService.CreateAsync(customer);
+            return NoContent();
         }
 
         [HttpPut("{name}")]
         public async Task<IActionResult> Put(string name, CustomerDTO customer)
         {
-            try
-            {
-                var validationResult = await _customerValidator.ValidateAsync(customer);
-                if (!validationResult.IsValid)
-                    return Conflict(validationResult.Errors);
+            var validationResult = await _customerValidator.ValidateAsync(customer);
+            if (!validationResult.IsValid)
+                return Conflict(validationResult.Errors);
 
-                await _customerService.UpdateAsync(name, customer);
-                return NoContent();
-
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _customerService.UpdateAsync(name, customer);
+            return NoContent();
         }
 
         [HttpDelete("{name}")]
         public async Task<IActionResult> Delete(string name)
         {
-            try
-            {
-                await _customerService.DeleteAsync(name);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _customerService.DeleteAsync(name);
+            return Ok();
         }
 
         [HttpGet]
         public async Task<ActionResult<SearchCustomersResponse>> SearchCustomers([FromQuery] SearchCustomersRequest request)
         {
-            try
-            {
-                var response = await _customerService.SearchCustomersAsync(
-                    request.Query, request.SortColumn.ToString(), request.SortOrder.ToString(), request.PageIndex, request.PageSize);
-                return Ok(response);
-            }
-            catch
-            {
-                return BadRequest();
-            }
+            var response = await _customerService.SearchCustomersAsync(
+                request.Query, request.SortColumn.ToString(), request.SortOrder.ToString(), request.PageIndex, request.PageSize);
+            return Ok(response);
         }
     }
 }

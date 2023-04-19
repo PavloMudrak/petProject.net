@@ -1,13 +1,10 @@
 using DataAccessLayer.DataProviders;
 using DataAccessLayer;
 using ServerDevelopment.Data;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-using System.Net;
-using Microsoft.AspNetCore.Hosting;
 using AutoMapper;
-using DataAccessLayer.Models;
 using ServerDevelopment.Mapper;
 using FluentValidation;
+using ServerDevelopment.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,12 +46,8 @@ else
     app.UseHsts();
 }
 
-
-
-
-
-//app.UseHttpsRedirection();
-
+app.UseExceptionHandlingMiddleware();
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors("MyApp");
