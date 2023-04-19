@@ -59,7 +59,7 @@ namespace DataAccessLayer.DataProviders
         public async Task<(IEnumerable<Customer> Customers, int TotalRows)> SearchCustomersAsync(string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize)
         {
             var result = await GetCustomers(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
-            if(result.TotalRows == 0)
+            if(result.TotalRows == 0 && searchTerm == "")
             {
                 var randomCustomers = GenerateRandomCustomers(100);
                 await _context.Customers.AddRangeAsync(randomCustomers);
