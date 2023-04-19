@@ -91,12 +91,8 @@ namespace ServerDevelopment.Data
         {
             try
             {
-                var customers = await _customerService.SearchCustomersAsync(request.Query, request.SortColumn.ToString(), request.SortOrder.ToString(), request.PageIndex, request.PageSize);
-                var response = new SearchCustomersResponse
-                {
-                    Customers = (List<CustomerDTO>)customers.Customers,
-                    PagesCount = _customerService.CalculatePagesCount(request.PageSize, customers.TotalRows)
-                };
+                var response = await _customerService.SearchCustomersAsync(
+                    request.Query, request.SortColumn.ToString(), request.SortOrder.ToString(), request.PageIndex, request.PageSize);
                 return Ok(response);
             }
             catch

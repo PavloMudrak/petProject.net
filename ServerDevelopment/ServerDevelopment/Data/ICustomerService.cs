@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.Models;
+using ServerDevelopment.Data.other;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,8 +11,7 @@ namespace ServerDevelopment.Data
         Task<CustomerDTO> GetByNameAsync(string name);
         Task UpdateAsync(string oldName, CustomerDTO customer);
         Task DeleteAsync(string name);
-        int CalculatePagesCount(int pageSize, int totalRows);
-        Task<(IEnumerable<CustomerDTO> Customers, int TotalRows)> SearchCustomersAsync(
+        Task<SearchCustomersResponse> SearchCustomersAsync(
             string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize);
     }
 }

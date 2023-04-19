@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using DataAccessLayer.DataProviders;
 using DataAccessLayer.Models;
-using FluentValidation;
+using ServerDevelopment.Data.other;
+using ServerDevelopment.Helpes;
 
 namespace ServerDevelopment.Data
 {
@@ -48,25 +49,18 @@ namespace ServerDevelopment.Data
             await _customerProvider.DeleteCustomerAsync(name);
         }
 
-        public async Task<(IEnumerable<CustomerDTO> Customers, int TotalRows)> SearchCustomersAsync(string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize)
+        public async Task<SearchCustomersResponse> SearchCustomersAsync(string searchTerm, string sortColumn, string sortDirection, int pageIndex, int pageSize)
         {
             var result = await _customerProvider.SearchCustomersAsync(searchTerm, sortColumn, sortDirection, pageIndex, pageSize);
             var customersDTO = _mapper.Map<List<CustomerDTO>>(result.Customers);
-            return (customersDTO, result.TotalRows);
+            SearchCustomersResponse response = new SearchCustomersResponse();
+            response.Customers = customersDTO;
+            response.PagesCount = GeneralHelper.CalculatePagesCount(pageSize, result.TotalRows);
+            return response;
         }
 
 
-        public int CalculatePagesCount(int pageSize, int totalRows)
-        {
-            if ((totalRows % pageSize) == 0)
-            {
-                return totalRows / pageSize;
-            }
-            else
-            {
-                return totalRows / pageSize + 1;
-            }
-        }
+        
 
     }
 }
