@@ -26,7 +26,7 @@ namespace ServerDevelopment.Data
         [HttpGet("{name}")]
         public async Task<IActionResult> GetByName(string name)
         {
-            var customer = await _customerService.GetByIdName(name);
+            var customer = await _customerService.GetByName(name);
             if (customer == null)
             {
                 return NotFound();
@@ -48,17 +48,17 @@ namespace ServerDevelopment.Data
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Customer customer)
+        [HttpPut("{name}")]
+        public async Task<IActionResult> Put(string name, CustomerDTO customer)
         {
             try
             {
-                if (id != customer.Id)
+                var result = await _customerService.UpdateAsync(name ,customer);
+                if (!result.IsValid)
                 {
-                    return BadRequest();
+                    return Conflict(result.Errors);
                 }
-                await _customerService.UpdateAsync(customer);
-                return Ok();
+                return NoContent();
             }
             catch (Exception ex)
             {
