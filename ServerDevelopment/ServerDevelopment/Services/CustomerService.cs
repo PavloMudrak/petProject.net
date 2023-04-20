@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
-using DataAccessLayer.DataProviders;
+using DataAccessLayer.interfaces;
 using DataAccessLayer.Models;
+using ServerDevelopment.Data;
 using ServerDevelopment.Data.other;
 using ServerDevelopment.Helpes;
+using ServerDevelopment.Interfaces;
 
-namespace ServerDevelopment.Data
+namespace ServerDevelopment.Services
 {
     public class CustomerService : ICustomerService
     {
@@ -30,7 +32,7 @@ namespace ServerDevelopment.Data
             return customerDTO;
         }
 
-        public async Task UpdateAsync(string oldName,CustomerDTO customer)
+        public async Task UpdateAsync(string oldName, CustomerDTO customer)
         {
             var customerFromDb = await _customerProvider.GetCustomerByNameAsync(oldName);
             var updatedCustomer = _mapper.Map<Customer>(customer);
@@ -60,7 +62,7 @@ namespace ServerDevelopment.Data
         }
 
 
-        
+
 
     }
 }

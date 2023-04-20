@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using ServerDevelopment.Data;
+using ServerDevelopment.Interfaces;
 
 public class CustomerValidator : AbstractValidator<CustomerDTO>
 {

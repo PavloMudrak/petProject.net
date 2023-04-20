@@ -2,9 +2,11 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using ServerDevelopment.Data;
 using ServerDevelopment.Data.other;
+using ServerDevelopment.Interfaces;
 
-namespace ServerDevelopment.Data
+namespace ServerDevelopment.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

@@ -8,8 +8,7 @@ namespace ServerDevelopment.Data.other
     {
         public int PageSize { get; set; } = 10;
         public int PageIndex { get; set; } = 1;
-        [BindNever]
-        public string Query { get; set; } = "";
+        public string? Query { get; set; } = "";
         public SortColumn SortColumn { get; set; } = SortColumn.Name;
         public SortOrder SortOrder { get; set; } = SortOrder.ASC;
     }

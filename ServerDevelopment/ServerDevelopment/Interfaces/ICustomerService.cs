@@ -1,9 +1,10 @@
 ﻿using DataAccessLayer.Models;
+using ServerDevelopment.Data;
 using ServerDevelopment.Data.other;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ServerDevelopment.Data
+namespace ServerDevelopment.Interfaces
 {
     public interface ICustomerService
     {
